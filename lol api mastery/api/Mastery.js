@@ -1,38 +1,51 @@
 let lastChamp = null;
 
 export default function handler(req, res) {
-const champs = [
-  "Aatrox","Ahri","Akali","Akshan","Alistar","Amumu","Anivia","Annie","Aphelios","Ashe",
-  "Aurelion Sol","Azir","Bard","Bel'Veth","Blitzcrank","Brand","Braum","Caitlyn","Camille","Cassiopeia",
-  "Cho'Gath","Corki","Darius","Diana","Draven","Ekko","Elise","Evelynn","Ezreal","Fiddlesticks",
-  "Fiora","Fizz","Galio","Gangplank","Garen","Gnar","Gragas","Graves","Gwen","Hecarim",
-  "Heimerdinger","Illaoi","Irelia","Ivern","Janna","Jarvan IV","Jax","Jayce","Jhin","Jinx",
-  "Kai'Sa","Kalista","Karma","Karthus","Kassadin","Katarina","Kayle","Kayn","Kennen","Kha'Zix",
-  "Kindred","Kled","Kog'Maw","LeBlanc","Lee Sin","Leona","Lillia","Lissandra","Lucian","Lulu",
-  "Lux","Malphite","Malzahar","Maokai","Master Yi","Milio","Miss Fortune","Mordekaiser","Morgana","Naafiri",
-  "Nami","Nasus","Nautilus","Neeko","Nidalee","Nilah","Nocturne","Nunu","Olaf","Orianna",
-  "Ornn","Pantheon","Poppy","Pyke","Qiyana","Quinn","Rakan","Rammus","Rek'Sai","Rell",
-  "Renata","Renekton","Rengar","Riven","Rumble","Ryze","Samira","Sejuani","Senna","Seraphine",
-  "Sett","Shaco","Shen","Shyvana","Singed","Sion","Sivir","Skarner","Smolder","Sona",
-  "Soraka","Swain","Sylas","Syndra","Tahm Kench","Taliyah","Talon","Taric","Teemo","Thresh",
-  "Tristana","Trundle","Tryndamere","Twisted Fate","Twitch","Udyr","Urgot","Varus","Vayne","Veigar",
-  "Vel'Koz","Vex","Vi","Viego","Viktor","Vladimir","Volibear",
-  "Warwick","Wukong",
-  "Xayah","Xerath","Xin Zhao",
-  "Yasuo","Yone","Yorick","Yuumi",
-  "Zac","Zed","Zeri","Ziggs","Zilean","Zoe","Zyra"
-  ];
+  const roles = {
+    top: [
+      "Aatrox","Camille","Cho'Gath","Darius","Dr. Mundo","Fiora","Gangplank","Garen","Gnar","Gragas",
+      "Gwen","Illaoi","Irelia","Jax","Kayle","Kennen","Kled","Malphite","Mordekaiser","Nasus",
+      "Olaf","Ornn","Pantheon","Poppy","Quinn","Renekton","Riven","Rumble","Sett","Shen",
+      "Singed","Sion","Tahm Kench","Teemo","Tryndamere","Urgot","Volibear","Warwick","Wukong","Yorick"
+    ],
+    jungle: [
+      "Amumu","Bel'Veth","Briar","Diana","Ekko","Elise","Evelynn","Fiddlesticks","Graves","Hecarim",
+      "Ivern","Jarvan IV","Karthus","Kayn","Kha'Zix","Kindred","Lee Sin","Lillia","Master Yi","Nidalee",
+      "Nocturne","Nunu","Rammus","Rek'Sai","Rengar","Sejuani","Shaco","Shyvana","Skarner","Taliyah",
+      "Trundle","Udyr","Vi","Viego","Warwick","Xin Zhao","Zac"
+    ],
+    mid: [
+      "Ahri","Akali","Akshan","Anivia","Annie","Aurelion Sol","Azir","Cassiopeia","Corki","Ekko",
+      "Fizz","Galio","Heimerdinger","Hwei","Kassadin","Katarina","LeBlanc","Lissandra","Lux","Malzahar",
+      "Naafiri","Neeko","Orianna","Qiyana","Ryze","Swain","Sylas","Syndra","Talon","Twisted Fate",
+      "Veigar","Vel'Koz","Vex","Viktor","Vladimir","Xerath","Yasuo","Yone","Zed","Ziggs","Zoe"
+    ],
+    adc: [
+      "Aphelios","Ashe","Caitlyn","Draven","Ezreal","Jhin","Jinx","Kai'Sa","Kalista","Kog'Maw",
+      "Lucian","Miss Fortune","Nilah","Samira","Sivir","Smolder","Tristana","Twitch","Varus","Vayne",
+      "Xayah","Zeri"
+    ],
+    support: [
+      "Alistar","Bard","Blitzcrank","Braum","Janna","Karma","Leona","Lulu","Milio","Morgana",
+      "Nami","Nautilus","Pyke","Rakan","Rell","Renata","Senna","Seraphine","Sona","Soraka",
+      "Taric","Thresh","Yuumi","Zyra"
+    ]
+  };
+
+  const roleKeys = Object.keys(roles);
+  const randomRole = roleKeys[Math.floor(Math.random() * roleKeys.length)];
+  const champPool = roles[randomRole];
 
   let champ;
 
-  // 85% keine direkte Wiederholung, 15% Wiederholung erlaubt
+  // 85% keine direkte Wiederholung
   do {
-    champ = champs[Math.floor(Math.random() * champs.length)];
+    champ = champPool[Math.floor(Math.random() * champPool.length)];
   } while (champ === lastChamp && Math.random() < 0.85);
 
   lastChamp = champ;
 
-  // Level Verteilung: low häufiger, high selten
+  // Level: low häufiger, high selten
   const roll = Math.random();
   let level;
 
